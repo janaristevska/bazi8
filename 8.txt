@@ -1,0 +1,13 @@
+with cte1 as(
+    SELECT k.k_ime
+    FROM Korisnik k left JOIN Premium_korisnik pk ON k.k_ime=pk.k_ime
+    WHERE pk.k_ime is NULL
+), 
+cte2 as(
+    SELECT c.k_ime, COUNT(l.naslov) as br_zapisi
+    FROM Profil p JOIN cte1 c ON p.k_ime=c.k_ime JOIN Lista_zelbi l ON c.k_ime=l.k_ime and l.ime=p.ime
+    GROUP BY c.k_ime, l.ime
+)
+SELECT c2.k_ime, avg(br_zapisi)
+FROM cte2 c2
+GROUP BY c2.k_ime
